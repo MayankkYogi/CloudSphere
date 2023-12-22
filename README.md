@@ -103,6 +103,7 @@
   docker run -it --name cloudcontainer updateimage /bin/bash
 
   now check whether myfile is located inside tmp or not
+  Commands:
 
   ls
   cd tmp/ 
@@ -124,9 +125,7 @@
   RUN echo "I am devops engineer" > /tmp/testfile   -> it will create a file having some contents
   Press escape wq:
 
-  ```
-  ### Commands:
-
+  Commands:
   docker build -it test .    -> . means current directory
   docker run -it --name testcontainer test /bin/bash
   ls
@@ -134,6 +133,8 @@
   ls
   cat testfile
 
+  ```
+ 
   ```
   vi Dockerfile
   FROM Ubuntu
@@ -144,9 +145,7 @@
   ADD test.tar.gz /tmp  -> extract and add to tmp
   esc :wq
 
-  ```
-  ### Commands:
-
+  Commands:
   touch testfile1
   touch test
   tar -cvf test.tar test -> create tar file of test
@@ -158,7 +157,8 @@
   ls
   cat testfile1
   echo $myname
-
+  ```
+ 
 # Docker Volume
   - It is a directory in our container.
   - Intially we have to declare this directory as a volume and then we can use it.
@@ -178,9 +178,9 @@
   vi Dockerfile
   FROM ubuntu
   VOLUME ["/myvolume"]
-
-  ```
-  ### Commands
+  
+  Commands:
+  
   docker build -t myimage .
   docker images
   docker run -it --name myvolume myimage /bin/bash
@@ -202,6 +202,8 @@
 
   We can create volume using commands:
   docker run -it --name container3 -v /volume2 ubuntu /bin/bash
+  ```
+
   
 # Docker Compose
   It is used to power multi container application where various services will be hosted inside different container.
