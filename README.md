@@ -53,7 +53,22 @@
 
 # Docker - Architecture
 
-![image description](Image.PNG)
+![image description](OldArch.PNG)
+
+1. The server is the physical server that is used to host multiple virtual machines
+2. The Host OS is the base machine such as Linux or Window
+3. The Hypervisor is either VMWare or Windows Hyper V that is used to host virtual machines
+4. You would then install multiple operating systems as virtual machines on top of the existing hypervisor as
+   Guest OS
+5. You would then host your applications on top of each Guest OS.
+
+![image description](NewArch.PNG)
+
+1. The server is the physical server that is used to host multiple virtual machines. So this layer remains the same.
+2. The Host OS is the base machine such as Linux or Windows. So this layer remains the same.
+3. Now comes the new generation which is the Docker engine. This is used to run the operating system which earlier used to be virtual machines as Docker containers.
+4. All of the Apps now run as Docker containers.
+   
 # Components of Docker:
 
 ### Docker Daemon 
