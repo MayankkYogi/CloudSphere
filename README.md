@@ -53,7 +53,7 @@
 
 # Docker - Architecture
 
-![Screenshot](New Architecture.png)
+![Screenshot](New Architecture.PNG)
 # Components of Docker:
 
 ### Docker Daemon 
