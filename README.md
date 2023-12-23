@@ -34,8 +34,8 @@ K8S: Complicated and series of manual steps
 Swarm: Fast and easy
 
 ### Supports
-K8S: It can work with any type of container docker, rocket
-Swarm: Support only docker container
+-K8S: It can work with any type of container docker, rocket
+-Swarm: Support only docker container
 
 ### GUI
 K8S: No GUI
