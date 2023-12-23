@@ -31,22 +31,22 @@ balancing. It schedules, runs and manages containers which are running on virtua
 
 ### Installtion
 K8S: Complicated and series of manual steps\
-Swarm: Fast and easy\
+Swarm: Fast and easy
 
 ### Supports
-K8S: It can work with any type of container docker, rocket
+K8S: It can work with any type of container docker, rocket\
 Swarm: Support only docker container
 
 ### GUI
-K8S: No GUI
+K8S: No GUI\
 Swarm: GUI available
 
 ### Volume
-K8S: Only shared with container inside same POD
+K8S: Only shared with container inside same POD\
 Swarm: Can be shared with any containers
 
 ### Auto Scaling
-K8S: Support Vertical and horizontal
+K8S: Support Vertical and horizontal\
 Swarm: Not Support
 
 
