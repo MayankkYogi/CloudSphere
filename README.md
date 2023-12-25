@@ -110,6 +110,12 @@ As we have controller based on specific tasks:
 6. Pod run on node which is control by master
 7. Usually one pod contain one container
 
+### Fundaments of PODS
+1. When a pods get created, it is schedules to run the node in your cluster
+2. The pod remains on the node untill the process is terminated, node crash, object is deleted
+3. If node deleted or crash so pod on that will also deleted after certain default time period
+4. For new node created existing POD will not reschedules instead it will create a new POD with different UID.
+
 ### If Multi-Container POD
 1. Connect each other via local host not with unique IP address, as POD have IP not container
 2. Share same volume
@@ -133,7 +139,8 @@ As we have controller based on specific tasks:
 - Requirement for creating a master node: 2 vCPU and 4 GB RAM
 
 # Setup master and worker node on AWS
-- Luanch 3 instances (one master node and two worker node)
+- Launch 3 instances (one master node and two worker node)
+- Edit Security group and allow all traffic
 - Run below commands in all 3 instances/VMs
 - Choose Ubuntu free tier instance which is t2.medium
 ### Commands
@@ -177,10 +184,14 @@ kubectl get nodes -> run in master to check whether node is connected or not
 
 1. K8S uses objects to represent the state of the cluster.
 2. Objects contains what a containerized application are running on which node.
-3. Also fove information about the policies like restart policies, fault tolerance etc.
+3. Also for information about the policies like restart policies, fault tolerance etc treat as object
 4. After creating objects k8s make sure that system will constantly work to esure that object exist and maintain desired cluster state
+5. There are 2 field of object one is object specification and another is object status.
+6. Object spec is what we describe in the manifest file eg: we want tomcat server, port 80, 2 replica sets etc.
+7. Object status is actual state that is provided by kubernetes after running the manifest file.
+8. It represent as JSON or YAML files(manifest in k8s).
 
-### Types of objects:
+### Some object in k8s:
 - POD
 - Service
 - Volume
@@ -190,12 +201,136 @@ kubectl get nodes -> run in master to check whether node is connected or not
 - Replica Sets
 - Namespace
 
+# K8S objects management
+The kubectl command line tool supports serveral different ways  to create and manage kubernetes objects
+
+1. Imperative Commands: line by line commands that we run on cmd.
+2. Declarative object configuration: individual files(yml/json) mostly used in PROD enviroment.
+
 # Minikube
-It is a lightweight k8s implementation that creates a VM on your local machine and deploy a simple cluster containing only one node
+It is a lightweight k8s implementation that creates a VM on your local machine and deploy a simple cluster containing only one node. Here both master and worker node can run on same machine no need to create separate VM for master and worker node. Used for learning, development and testing.
 
 ### kubectl
 It is a k8s command line tool. It allows to run command against your clusters. We can use this to deploy, inspect and manager cluster and also view logs.
 
+```
+sudo su
+Now install docker
+sudo apt update && apt -y install docker.io
+# install Kubectl
+curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl && chmod +x ./kubectl && sudo mv ./kubectl /usr/local/bin/kubectl
+kubectl version
+# Now install Minikube
+curl -Lo minikube https://www.youtube.com/redirect?event=video_description&redir_token=QUFFLUhqbkVLdUM4OGlxX2Z5b0Q3bmwta3lZbVd2RlVJUXxBQ3Jtc0trekE2M2JxR2s4TGhUS1prdDVrdUlwWHhocklUS05idXRydTVNMnJld1FhUzVrZHl3eVB1VVI4UWRVUFB6SmJEYXlGRmJlcERGZjVqOEZzWHdDRU1sazBXd3RUWjNPMkpFVzlERjU3Y3FLa29BM3R0Zw&q=https%3A%2F%2Fstorage.googleapis.com%2Fminikube%2Freleases%2Flatest%2Fminikube-linux-amd64&v=hV8zi3vdQqk && chmod +x minikube && sudo mv minikube /usr/local/bin/
+
+apt install conntrack ---> need to run to support minikube
+minikube start --vm-driver=none
+minikube status
+kubectl version
+kubectl get nodes
+
+```
+```
+vi pod1.yml
+kind: Pod
+apiVersion: v1
+metadata:
+  name: testpod1
+spec:
+  containers:
+    - name: c00
+      image: ubuntu
+      command: ["/bin/bash", "-c", "while true; do echo cloudsphere; sleep 5 ; done"]
+    - name: c01
+      image: ubuntu
+      command: ["/bin/bash", "-c", "while true; do echo Hello-Mayank; sleep 5 ; done"]
+  restartPolicy: Never   #default to always
+
+:wq  ---> to save and exit
+
+kubectl apply -f pod1.yml  ---> to execute yml file
+kubectl get pods  ---> to view pods
+kubectl get pods -o ---> to check in which node this pod is created
+kubectl describe pod testpod1  --> to view more details
+OR
+kubectl describe pod/testpod1  --> to view more details
+kubectl delete pod testpod1  ---> to delete pod
+kubectl delete -f pod1.yml  ---> to delete pod via yml
+kubectl logs -f testpod1 -c c00  ----> to check the logs of container
+kubectl exec testpod1  -c c00 -- hostname -i ---> to check the IP of pod
+kubectl exec testpod1 -it -c c00 -- /bin/bash   ----> to work in container
+ps -ef
+exit
+```
+
+```
+# use comments or annotation for the description
+
+vi pod2.yml
+kind: Pod
+apiVersion: v1
+metadata:
+  name: testpod2
+  annotations:
+    description: First POD is created 
+spec:
+  containers:
+    - name: c00
+      image: ubuntu
+      command: ["/bin/bash", "-c", "while true; do echo cloudsphere; sleep 5 ; done"]
+  restartPolicy: Never   #default to always
+
+:wq  ---> to save and exit
+
+kubectl apply -f pod2.yml  ---> to execute yml file
+kubectl describe pod testpod2
+```
+
+```
+# POD ENVIRONMENT  VARIABLES
+
+
+kind: Pod
+apiVersion: v1
+metadata:
+  name: environments
+spec:
+  containers:
+    - name: c00
+      image: ubuntu
+      command: ["/bin/bash", "-c", "while true; do echo Hello-Mayank; sleep 5 ; done"]
+      env:                        # List of environment variables to be used inside the pod
+      - name: MYNAME
+        value: Mayank
+
+kubectl apply -f pod3.yml  ---> to execute yml file
+kubectl describe pod environments
+kubectl exec environments -it -c c00 -- /bin/bash   ----> to work in container
+env
+echo $MYNAME
+
+```
+
+```
+# POD WITH PORTS
+
+kind: Pod
+apiVersion: v1
+metadata:
+  name: podPorts
+spec:
+  containers:
+    - name: c00
+      image: httpd
+      ports:
+       - containerPort: 80  
+
+kubectl apply -f pod4.yml  ---> to execute yml file
+kubectl describe pod podPorts
+kubectl get pods -o wide --> we can get podIP
+curl podIP
+
+```
 # Labels
 Labels are mechanism which we can use to organise the kubernetes objects. This labels we can apply on node, pod or any objects. It is similar to tag which we used in Azure.
 
