@@ -1196,7 +1196,7 @@ We deploy 3rd party API in cluster i.e. metric-server which is used to collect d
 
 There is a cooldown period which is used to wait bedore deleting any POD to downscale. Means if CPU thresold is less then specified thresold value then controller wait for 5 mins before deleting any POD
 
---kubelet-insecure-tls ----> it will bypass all required certificate
+--kubelet-insecure-tls ----> it will bypass all required certificate\
 kubectl autoscale deployment mydeploy --cpu-percent=20 --min=1 --max=10 ---> to create HPA\
 --cpu-percent=20 ---> thresold value\
 --min=1 ----> it will keep minimum 1 pod not less then that\
